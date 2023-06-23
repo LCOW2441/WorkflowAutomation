@@ -9,19 +9,13 @@ var StatusUpdateMessage = "Enter your message to display when Status is updated"
 // Uncomment next message to use pre-defined message
 //var StatusUpdateMessage = owner + " set the task " + task + " to " +  status ;
 
-
 function SendSlackMessage(e) {
 
   var theRow = e.range.getRow();
-  var theCol = e.range.getColumn();
   var sheet = SpreadsheetApp.getActiveSheet();
   var range = sheet.getRange(theRow, 1)
   var lastRow = sheet.getLastRow();
   var range = sheet.getRange(lastRow, 1, 1, lastColumn);
-  var rowValues = range.getValues()[0];
-  var isRowFilled = rowValues.every(function(cell) {
-    return cell !== '';
-  });
 
 
 // If you want to keep last two columns optional, then write getLastColumn()-2
@@ -32,7 +26,11 @@ function SendSlackMessage(e) {
   var owner = sheet.getRange(lastRow, 6, 1, 1).getValue();
 
 
-
+  var theCol = e.range.getColumn();
+  var rowValues = range.getValues()[0];
+  var isRowFilled = rowValues.every(function(cell) {
+    return cell !== '';
+  });
   var source= e.source;
   var task = source.getActiveSheet().getRange(theRow, 1, 1, 1).getValue();
   var owner = source.getActiveSheet().getRange(lastRow, 6, 1, 1).getValue();
