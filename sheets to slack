@@ -1,0 +1,65 @@
+function SendSlackMessage(e) {
+  var theRow = e.range.getRow();
+  var theCol = e.range.getColumn();
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var range = sheet.getRange(theRow, 1)
+  var lastRow = sheet.getLastRow();
+// If you want to keep last two columns optional, then write getLastColumn()-2
+  var lastColumn = sheet.getLastColumn()-2
+  var range = sheet.getRange(lastRow, 1, 1, lastColumn);
+  var rowValues = range.getValues()[0];
+  var isRowFilled = rowValues.every(function(cell) {
+    return cell !== '';
+  });
+
+
+  var source= e.source;
+  var task = source.getActiveSheet().getRange(theRow, 1, 1, 1).getValue();
+// Edit the second parameter of the getRange with the column number of the Owner column
+  var owner = source.getActiveSheet().getRange(lastRow, 6, 1, 1).getValue();
+  var status = e.value;
+// Enter the slack incoming webhook URL
+  var url = 'https://hooks.slack.com/services/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';
+
+  var headers = {
+    'Content-type' : 'application/json'
+  }
+
+
+// Edit the second parameter of the getRange with the column number of the Status column
+  var statusValue = sheet.getRange(theRow, 5, 1, 1).getValue();
+// Edit the second parameter of the getRange with the column number of the Owner column
+  var owner = sheet.getRange(lastRow, 6, 1, 1).getValue();
+
+// For New Task notification
+ if (isRowFilled){
+  if(statusValue === "Open" && theCol === lastColumn && owner !== '') {
+
+    var payload = {
+      'text' : "New Task Assigned to " + owner 
+    }
+    var options = {
+    headers: headers,
+    method : 'POST',
+    payload : JSON.stringify(payload)
+  }
+    UrlFetchApp.fetch(url, options);
+
+  }
+// For Status column update notification
+else if(theCol == 5 && statusValue !== "Open"){ 
+
+    var payload = {
+      'text' : owner + " set the task " + task + " to " +  status 
+    }
+    var options = {
+    headers: headers,
+    method : 'POST',
+    payload : JSON.stringify(payload)
+  }
+    UrlFetchApp.fetch(url, options);
+
+  } else{
+    return;
+  }
+}}
