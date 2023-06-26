@@ -11,7 +11,6 @@ function SendSlackMessage(e) {
 
   var theRow = e.range.getRow();
   var sheet = SpreadsheetApp.getActiveSheet();
-  // var range = sheet.getRange(theRow, 1)
   var lastRow = sheet.getLastRow();
   // If you want to keep last two columns optional, then write getLastColumn()-2
   var lastColumn = sheet.getLastColumn()-2
