@@ -1,25 +1,24 @@
 // Enter your Slack Incoming Webhook URl
-var webhookUrl = 'https://hooks.slack.com/services/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';
+var webhookUrl = 'https://hooks.slack.com/services/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';
 
-var NewTaskMessage = "Enter your message to display when New Task is added";
-// Uncomment next message to use pre-defined message
-//var NewTaskMessage = "New Task Assigned to " + owner ;
+// var NewTaskMessage = "Enter your message to display when New Task is added";
+// Uncomment previous message to use pre-defined message
 
-var StatusUpdateMessage = "Enter your message to display when Status is updated";
-// Uncomment next message to use pre-defined message
-//var StatusUpdateMessage = owner + " set the task " + task + " to " +  status ;
+// var StatusUpdateMessage = "Enter your message to display when Status is updated";
+// Uncomment previous message to use pre-defined message
 
 function SendSlackMessage(e) {
 
   var theRow = e.range.getRow();
   var sheet = SpreadsheetApp.getActiveSheet();
-  var range = sheet.getRange(theRow, 1)
+  // var range = sheet.getRange(theRow, 1)
   var lastRow = sheet.getLastRow();
-  var range = sheet.getRange(lastRow, 1, 1, lastColumn);
-
-
-// If you want to keep last two columns optional, then write getLastColumn()-2
+  // If you want to keep last two columns optional, then write getLastColumn()-2
   var lastColumn = sheet.getLastColumn()-2
+
+  var range2 = sheet.getRange(lastRow, 1, 1, lastColumn);
+
+
 // Edit the second parameter of the getRange with the column number of the Status column
   var statusValue = sheet.getRange(theRow, 5, 1, 1).getValue();
 // Edit the second parameter of the getRange with the column number of the Owner column
@@ -27,13 +26,13 @@ function SendSlackMessage(e) {
 
 
   var theCol = e.range.getColumn();
-  var rowValues = range.getValues()[0];
+  var rowValues = range2.getValues()[0];
   var isRowFilled = rowValues.every(function(cell) {
     return cell !== '';
   });
   var source= e.source;
   var task = source.getActiveSheet().getRange(theRow, 1, 1, 1).getValue();
-  var owner = source.getActiveSheet().getRange(lastRow, 6, 1, 1).getValue();
+  var owner = source.getActiveSheet().getRange(theRow, 6, 1, 1).getValue();
   var status = e.value;
 
   var headers = {
@@ -45,7 +44,7 @@ function SendSlackMessage(e) {
   if(statusValue === "Open"&& theCol === lastColumn && owner !== '') {
 
     var payload = {
-      'text' : NewTaskMessage
+      'text' : "New Task Assigned to " + owner
     }
 
 
@@ -62,7 +61,7 @@ function SendSlackMessage(e) {
   else if(theCol == 5 && statusValue !== "Open"){
 
     var payload = {
-      'text' :  StatusUpdateMessage
+      'text' :  owner + " set the task " + task + " to " +  status
     }
 
     var options = {
